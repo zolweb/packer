@@ -1,0 +1,68 @@
+{
+    "variables": {
+        "name": "zol-debian-wheezy",
+        "disk_size": 40000,
+        "compression_level": 5,
+        "hostname": "zol",
+        "domain": "zol"
+    },
+
+    "builders": [
+        {
+            "vm_name": "{{user `name`}}",
+            "type": "virtualbox-iso",
+            "guest_os_type": "Debian_64",
+            "iso_url": "http://cdimage.debian.org/debian-cd/7.4.0/amd64/iso-cd/debian-7.4.0-amd64-netinst.iso",
+            "iso_checksum": "e7e9433973f082a297793c3c5010b2c5",
+            "iso_checksum_type": "md5",
+            "ssh_username": "vagrant",
+            "ssh_password": "vagrant",
+            "ssh_wait_timeout": "40m",
+            "shutdown_command": "echo 'vagrant' | sudo -S shutdown -hP now",
+            "shutdown_timeout": "1m",
+            "vboxmanage": [
+                ["modifyvm", "{{.Name}}", "--memory", "1024"],
+                ["modifyvm", "{{.Name}}", "--cpus", "2"]
+            ],
+            "disk_size": "{{user `disk_size`}}",
+            "http_directory": "./http_directory",
+            "boot_wait": "5s",
+            "boot_command": [
+                "<esc><wait>",
+                "/install.amd/vmlinuz ",
+                "auto=true preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian_wheezy_preseed.cfg ",
+                "locale=fr_FR.UTF-8 keymap=fr(latin9) ",
+                "domain={{user `domain`}} hostname={{user `hostname`}} ",
+                "initrd=/install.amd/initrd.gz -- quiet <enter>"
+            ]
+        }
+    ],
+
+    "provisioners": [
+        {
+            "type": "shell",
+            "script": "./scripts/vbox_guest_additions.sh"
+        },
+        {
+            "type": "shell",
+            "script": "./scripts/prepare_vagrant.sh"
+        },
+        {
+            "type": "file",
+            "source": "./scripts/motd",
+            "destination": "/tmp/motd"
+        },
+        {
+            "type": "shell",
+            "script": "./scripts/motd.sh"
+        }
+    ],
+
+    "post-processors": [
+        {
+            "type": "vagrant",
+            "compression_level": "{{user `compression_level`}}",
+            "output": "{{user `name`}}.box"
+        }
+    ]
+}
