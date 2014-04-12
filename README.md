@@ -8,9 +8,9 @@ Packer?
 
 > Packer is easy to use and automates the creation of any type of machine image.
 
-[http://www.packer.io/]()
+http://www.packer.io/
 
-[http://www.packer.io/docs/installation.html]()
+http://www.packer.io/docs/installation.html]
 
 In each packer command you can use options like this:
 
