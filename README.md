@@ -41,3 +41,9 @@ Available options:
  - `disk_size`: default `40000` (40GB)
  - `hostname` default `zol`
  - `domain`: default `zol`
+
+
+License
+-------
+
+Licensed under the MIT License
